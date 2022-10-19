@@ -8,7 +8,7 @@ from .views import PostListView, GroupListView, CommentListView, FollowListView
 router_v1 = DefaultRouter()
 router_v1.register('posts', PostListView)
 router_v1.register('groups', GroupListView)
-router_v1.register('follows', FollowListView, basename='followers')
+router_v1.register('follow', FollowListView, basename='followers')
 router_v1.register(r'posts/(?P<post_id>\d+)/comments',
                    CommentListView, basename='comments')
 

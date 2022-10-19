@@ -36,10 +36,11 @@ class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username',
+        default=serializers.CurrentUserDefault()
     )
-    author = serializers.SlugRelatedField(
-        read_only=True,
+    following = serializers.SlugRelatedField(
         slug_field='username',
+        queryset=User.objects.all()
     )
 
     class Meta:
@@ -48,11 +49,11 @@ class FollowSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
-                fields=('user', 'author')
+                fields=('user', 'following')
             )
         ]
 
     def validate(self, data):
-        if data['user'] == data['author']:
-            raise ValueError('Нельза подписаться самому на себя')
+        if data['following'] == self.context.get('request').user:
+            raise serializers.ValidationError('Нельзя подписаться самому на себя')
         return data
